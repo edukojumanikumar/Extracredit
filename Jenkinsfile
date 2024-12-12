@@ -6,7 +6,12 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker_id'  // Use the correct credential ID
         GIT_REPO = 'https://github.com/edukojumanikumar/Extracredit.git'  // Updated GitHub repo URL
         KUBECONFIG_CREDENTIALS_ID = 'kubeconfig_id' // Kubernetes config credential ID
-        AWS_CREDENTIALS_ID = 'aws-credentials-id' // AWS credentials ID for the profile
+        
+        // Hardcoding AWS credentials (for demonstration purposes)
+        AWS_ACCESS_KEY_ID = 'AKIA4MTWMBAGEJAEEVO6'  // AWS Access Key
+        AWS_SECRET_ACCESS_KEY = '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'  // AWS Secret Key
+        AWS_DEFAULT_REGION = 'us-east-2'  // AWS Region
+        AWS_PROFILE = 'Amartya' // AWS Profile
     }
 
     stages {
@@ -63,11 +68,14 @@ pipeline {
         stage('Configure AWS and Update Kubernetes Context') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: AWS_CREDENTIALS_ID, variable: 'AWS_CREDENTIALS')]) {
-                        // Set the AWS profile and update the kubeconfig
-                        sh 'export AWS_PROFILE=Amartya'  // Specify the correct AWS profile
-                        sh 'aws eks update-kubeconfig --name my-cluster --region us-east-2'  // Update kubeconfig with the profile
-                    }
+                    // Set AWS credentials as environment variables
+                    sh 'export AWS_ACCESS_KEY_ID=AKIA4MTWMBAGEJAEEVO6'
+                    sh 'export AWS_SECRET_ACCESS_KEY=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'
+                    sh 'export AWS_DEFAULT_REGION=us-east-2'
+                    sh 'export AWS_PROFILE=Amartya'  // Set AWS Profile
+
+                    // Update kubeconfig using AWS CLI
+                    sh 'aws eks update-kubeconfig --name my-cluster --region us-east-2'  // Update kubeconfig with the profile
                 }
             }
         }
@@ -79,8 +87,8 @@ pipeline {
                         // Deploy backend deployment and service
                         sh 'kubectl delete -f Extracredit/back-end-deployment.yml || true'
                         sh 'kubectl apply -f Extracredit/back-end-deployment.yml'
-                        sh 'kubectl delete -f Extracredit/k8s/backendend-service.yml || true' // Backend service with the correct file name
-                        sh 'kubectl apply -f Extracredit/k8s/backendend-service.yml'
+                        sh 'kubectl delete -f Extracredit/backendend-service.yml || true'
+                        sh 'kubectl apply -f Extracredit/backendend-service.yml'
 
                         // Deploy frontend deployment and service
                         sh 'kubectl delete -f Extracredit/front-end-deployment.yml || true'
