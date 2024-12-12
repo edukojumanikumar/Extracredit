@@ -6,6 +6,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker_id'  // Use the correct credential ID
         GIT_REPO = 'https://github.com/edukojumanikumar/Extracredit.git'  // Updated GitHub repo URL
         KUBECONFIG_CREDENTIALS_ID = 'kubeconfig_id' // Kubernetes config credential ID
+        AWS_CREDENTIALS_ID = 'aws-credentials-id' // AWS credentials ID for the profile
     }
 
     stages {
@@ -30,7 +31,7 @@ pipeline {
         stage('Build Frontend Docker Image') {
             steps {
                 script {
-                    // Build the frontend Docker image using the correct directory
+                    // Build the frontend Docker image using the correct directory (vue-frontend folder)
                     sh 'docker build -t ${DOCKER_IMAGE_FRONTEND} ./Extracredit/vue-frontend'
                 }
             }
@@ -59,6 +60,29 @@ pipeline {
             }
         }
 
+        stage('Configure AWS and Update Kubernetes Context') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: AWS_CREDENTIALS_ID, variable: 'AWS_CREDENTIALS')]) {
+                        // Set the AWS profile and update the kubeconfig
+                        sh 'export AWS_PROFILE=Amartya'  // Specify the correct AWS profile
+                        sh 'aws eks update-kubeconfig --name my-cluster --region us-east-2'  // Update kubeconfig with the profile
+                    }
+                }
+            }
+        }
+
+
+        stage('Push Frontend Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        // Authenticate and push the frontend image to Docker Hub
+                        sh "docker push ${DOCKER_IMAGE_FRONTEND}"
+                    }
+                }
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
