@@ -20,7 +20,7 @@ import com._5.swe.service.SurveyService;
 
 @RestController
 @RequestMapping("/api/surveys")
-@CrossOrigin(origins = "http://a39e44250dcfc4048bb4b9bddea338f7-1799642960.us-east-2.elb.amazonaws.com") // Adjust to match your frontend URL
+@CrossOrigin(origins = "http://a3d8f1edcd7a84ccaa8e3706307d5c0d-595132341.us-east-2.elb.amazonaws.com/") // Adjust to match your frontend URL
 public class SurveyController {
 
     @Autowired
