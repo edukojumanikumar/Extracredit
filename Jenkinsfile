@@ -21,8 +21,8 @@ pipeline {
         stage('Build Backend Docker Image') {
             steps {
                 script {
-                    // Build the backend Docker image using the correct directory
-                    sh 'docker build -t ${DOCKER_IMAGE_BACKEND} ./Extracredit/backend'
+                    // Build the backend Docker image using the correct directory (swe folder)
+                    sh 'docker build -t ${DOCKER_IMAGE_BACKEND} ./Extracredit/swe'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     // Build the frontend Docker image using the correct directory
-                    sh 'docker build -t ${DOCKER_IMAGE_FRONTEND} ./Extracredit/frontend'
+                    sh 'docker build -t ${DOCKER_IMAGE_FRONTEND} ./Extracredit/vue-frontend'
                 }
             }
         }
