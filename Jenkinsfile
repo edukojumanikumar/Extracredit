@@ -64,16 +64,16 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
                         // Deploy backend deployment and service
-                        sh 'kubectl delete -f Extracredit/k8s/backend-deployment.yaml || true'
-                        sh 'kubectl apply -f Extracredit/k8s/backend-deployment.yaml'
-                        sh 'kubectl delete -f Extracredit/k8s/backend-service.yaml || true'
-                        sh 'kubectl apply -f Extracredit/k8s/backend-service.yaml'
+                        sh 'kubectl delete -f Extracredit/back-end-deployment.yml || true'
+                        sh 'kubectl apply -f Extracredit/back-end-deployment.yml'
+                        sh 'kubectl delete -f Extracredit/k8s/backendend-service.yml || true'
+                        sh 'kubectl apply -f Extracredit/k8s/backendend-service.yml'
 
                         // Deploy frontend deployment and service
-                        sh 'kubectl delete -f Extracredit/k8s/frontend-deployment.yaml || true'
-                        sh 'kubectl apply -f Extracredit/k8s/frontend-deployment.yaml'
-                        sh 'kubectl delete -f Extracredit/k8s/frontend-service.yaml || true'
-                        sh 'kubectl apply -f Extracredit/k8s/frontend-service.yaml'
+                        sh 'kubectl delete -f Extracredit/front-end-deployment.yml || true'
+                        sh 'kubectl apply -f Extracredit/front-end-deployment.yml'
+                        sh 'kubectl delete -f Extracredit/frontend-service.yml || true'
+                        sh 'kubectl apply -f Extracredit/frontend-service.yml'
                     }
                 }
             }
