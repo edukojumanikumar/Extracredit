@@ -87,14 +87,12 @@ pipeline {
                         // Deploy backend deployment and service
                         sh 'kubectl delete -f Extracredit/back-end-deployment.yml || true'
                         sh 'kubectl apply -f Extracredit/back-end-deployment.yml'
-                        sh 'kubectl delete -f Extracredit/backendend-service.yml || true'
-                        sh 'kubectl apply -f Extracredit/backendend-service.yml'
+                        
 
                         // Deploy frontend deployment and service
                         sh 'kubectl delete -f Extracredit/front-end-deployment.yml || true'
                         sh 'kubectl apply -f Extracredit/front-end-deployment.yml'
-                        sh 'kubectl delete -f Extracredit/frontend-service.yml || true'
-                        sh 'kubectl apply -f Extracredit/frontend-service.yml'
+                 
                     }
                 }
             }
