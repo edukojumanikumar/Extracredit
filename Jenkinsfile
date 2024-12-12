@@ -12,7 +12,6 @@ pipeline {
         stage('Clone Git Repository') {
             steps {
                 script {
-                    // Remove any existing repo and clone the GitHub repository to fetch the Dockerfiles and other resources
                     sh 'rm -rf Extracredit'
                     sh 'git clone ${GIT_REPO}'
                 }
@@ -22,8 +21,8 @@ pipeline {
         stage('Build Backend Docker Image') {
             steps {
                 script {
-                    // Navigate into the backend directory and build the Docker image using the Dockerfile
-                    sh 'docker build -t ${DOCKER_IMAGE_BACKEND} ./Extracredit/swe'
+                    // Build the backend Docker image using the correct directory
+                    sh 'docker build -t ${DOCKER_IMAGE_BACKEND} ./Extracredit/backend'
                 }
             }
         }
@@ -31,8 +30,8 @@ pipeline {
         stage('Build Frontend Docker Image') {
             steps {
                 script {
-                    // Navigate into the frontend directory and build the Docker image using the Dockerfile
-                    sh 'docker build -t ${DOCKER_IMAGE_FRONTEND} ./Extracredit/vue-frontend'
+                    // Build the frontend Docker image using the correct directory
+                    sh 'docker build -t ${DOCKER_IMAGE_FRONTEND} ./Extracredit/frontend'
                 }
             }
         }
@@ -40,8 +39,8 @@ pipeline {
         stage('Push Backend Docker Image') {
             steps {
                 script {
-                    // Authenticate with Docker Hub and push the backend image
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        // Authenticate and push the backend image to Docker Hub
                         sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                         sh "docker push ${DOCKER_IMAGE_BACKEND}"
                     }
@@ -52,8 +51,8 @@ pipeline {
         stage('Push Frontend Docker Image') {
             steps {
                 script {
-                    // Authenticate with Docker Hub and push the frontend image
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        // Authenticate and push the frontend image to Docker Hub
                         sh "docker push ${DOCKER_IMAGE_FRONTEND}"
                     }
                 }
@@ -63,13 +62,18 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Use kubeconfig for Kubernetes authentication
                     withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
-                        // Apply Kubernetes deployment and service YAML files
+                        // Deploy backend deployment and service
                         sh 'kubectl delete -f Extracredit/k8s/backend-deployment.yaml || true'
                         sh 'kubectl apply -f Extracredit/k8s/backend-deployment.yaml'
+                        sh 'kubectl delete -f Extracredit/k8s/backend-service.yaml || true'
+                        sh 'kubectl apply -f Extracredit/k8s/backend-service.yaml'
+
+                        // Deploy frontend deployment and service
                         sh 'kubectl delete -f Extracredit/k8s/frontend-deployment.yaml || true'
                         sh 'kubectl apply -f Extracredit/k8s/frontend-deployment.yaml'
+                        sh 'kubectl delete -f Extracredit/k8s/frontend-service.yaml || true'
+                        sh 'kubectl apply -f Extracredit/k8s/frontend-service.yaml'
                     }
                 }
             }
