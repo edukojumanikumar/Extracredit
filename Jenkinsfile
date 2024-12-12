@@ -72,17 +72,6 @@ pipeline {
             }
         }
 
-
-        stage('Push Frontend Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        // Authenticate and push the frontend image to Docker Hub
-                        sh "docker push ${DOCKER_IMAGE_FRONTEND}"
-                    }
-                }
-            }
-        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
@@ -90,8 +79,8 @@ pipeline {
                         // Deploy backend deployment and service
                         sh 'kubectl delete -f Extracredit/back-end-deployment.yml || true'
                         sh 'kubectl apply -f Extracredit/back-end-deployment.yml'
-                        sh 'kubectl delete -f Extracredit/backendend-service.yml || true'
-                        sh 'kubectl apply -f Extracredit/backendend-service.yml'
+                        sh 'kubectl delete -f Extracredit/k8s/backendend-service.yml || true' // Backend service with the correct file name
+                        sh 'kubectl apply -f Extracredit/k8s/backendend-service.yml'
 
                         // Deploy frontend deployment and service
                         sh 'kubectl delete -f Extracredit/front-end-deployment.yml || true'
