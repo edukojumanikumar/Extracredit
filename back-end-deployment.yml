@@ -1,0 +1,25 @@
+apiVersion: apps/v1  # Defines the API version of the Kubernetes Deployment
+kind: Deployment  # Specifies that this is a Deployment resource
+metadata:
+  name: student-survey-app  # The name of the Deployment
+spec:
+  replicas: 3  # The number of replicas (pods) to run
+  selector:
+    matchLabels:
+      app: student-survey-app  # The label selector for matching the pods
+  template:
+    metadata:
+      labels:
+        app: student-survey-app  # Labels applied to the pod template
+    spec:
+      containers:
+        - name: student-survey-app  # Name of the container
+          image: medukoju/extracredit-backend:latest  # Image location in AWS ECR
+          ports:
+            - containerPort: 8080  # The port the container will listen on
+
+
+
+
+
+          

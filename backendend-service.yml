@@ -1,0 +1,12 @@
+apiVersion: v1  # Defines the API version of the Kubernetes Service
+kind: Service  # Specifies that this is a Service resource
+metadata:
+  name: student-survey-service  # The name of the Service
+spec:
+  selector:
+    app: student-survey-app  # The label selector to match the pods this service will route traffic to
+  ports:
+    - protocol: TCP  # The protocol used (TCP in this case)
+      port: 80  # Exposing port 80 on the LoadBalancer
+      targetPort: 8080  # Port your Spring Boot app listens on inside the container
+  type: LoadBalancer  # Exposes the service externally using a LoadBalancer (for cloud environments)
