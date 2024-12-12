@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Update the base URL to match your back-end server
 //const SURVEY_API_BASE_URL = 'http://localhost:8080/api/surveys';
-const SURVEY_API_BASE_URL = 'http://ade148e9c86794460b6b37e468bbf8ea-1159143417.us-east-2.elb.amazonaws.com/api/surveys';
+const SURVEY_API_BASE_URL = 'http://a6a99f9c46a6a40c9a9623ae0680cc06-1356326351.us-east-2.elb.amazonaws.com/api/surveys';
 
 class SurveyService {
   submitSurvey(formData) {
