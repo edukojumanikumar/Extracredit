@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>GMU Student formSurvey Form</h1>
+    <h1>Survey Form</h1>
     <form @submit.prevent="submitSurvey">
       <!-- Basic information fields -->
       <div>
