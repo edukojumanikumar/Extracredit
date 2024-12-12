@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the .jar file from the swe folder into the container as app.jar
-COPY ./swe/swe-0.0.1-SNAPSHOT.jar app.jar
+COPY swe-0.0.1-SNAPSHOT.jar
 
 # Expose the application on port 8080
 EXPOSE 8080
